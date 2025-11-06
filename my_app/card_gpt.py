@@ -17,12 +17,12 @@ load_dotenv()
 if "pre_memory" not in st.session_state:
     st.session_state["pre_memory"] = ConversationBufferMemory(
         memory_key="chat_history",
-        return_messages=True
+        return_message=True
     )
     
 # 화면에 출력할 대화 기록 저장: ChatGPT 서비스와 유사하게 웹 상에서 우리의 질의 응답 내역이 계속 보여져야 하기 때문에 세션으로 관리가 필요     
-if "messages" not in st.session_state:
-    st.session_state["messages"] = [
+if "message" not in st.session_state:
+    st.session_state["message"] = [
         {"role": "assistant", "content": "안녕하세요, 저는 AI Assistant 입니다."}
     ]
 
@@ -71,7 +71,7 @@ final_prompt = ChatPromptTemplate([
 # 사용자 입력값을 받아 딕셔너리를 생성하는 함수 정의
 def get_user_imput(question):
     return{
-        "chat_history": st.session_state["pre_memory"].chat_memory.messages,
+        "chat_history": st.session_state["pre_memory"].chat_memory.message,
         "question": question,
         "context": search_card()
     }
@@ -123,7 +123,7 @@ if st.session_state["message"][-1]["role"] != "assistant":  # message 리스트�
     with st.chat_message("assistant"):
         try:
             ai_response = conversation_with_memory(question)
-            st.question_state["messages"].append({"role": "assistant", "content": ai_response})
+            st.question_state["message"].append({"role": "assistant", "content": ai_response})
             
         except Exception as e:
             error_ = f"""\
